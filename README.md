@@ -15,7 +15,7 @@ Inspired by [Custom UI: Mini media player](https://community.home-assistant.io/t
 
 #### UI mode
 
-1. Download and copy `mini-media-player-bundle.js` from the https://github.com/ewgen198409/mini-media-player-master/releases/tag/1.8.0 into your `config/www` directory.
+1. Download and copy `mini-media-player-bundle.js` from the https://github.com/ewgen198409/mini-media-player-master/releases into your `config/www` directory.
 2. Go to Sidebar -> Settings -> Dashboards -> Menu (top right corner) -> Resources.
 3. Click on `+ ADD RESOURCE`.
 4. Type `/local/mini-media-player-bundle.js` below URL.
