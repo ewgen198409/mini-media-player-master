@@ -23,6 +23,7 @@ export const generateConfig = (config: MiniMediaPlayerBaseConfiguration): MiniMe
     info: 'default',
     group: false,
     volume_stateless: false,
+    volume_bar: 'bars',
     more_info: true,
     source: 'default',
     sound_mode: 'default',

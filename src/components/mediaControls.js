@@ -46,7 +46,7 @@ class MiniMediaPlayerMediaControls extends LitElement {
   firstUpdated() {
     this.updateBarCountAndWidth();
     this.resizeObserver = new ResizeObserver(() => this.updateBarCountAndWidth());
-    this.resizeObserver.observe(this.shadowRoot.host.parentElement); // наблюдаем за родителем (карточкой)
+    this.resizeObserver.observe(this.shadowRoot.host.parentElement);
   }
 
   disconnectedCallback() {
@@ -54,19 +54,17 @@ class MiniMediaPlayerMediaControls extends LitElement {
     if (this.resizeObserver) this.resizeObserver.disconnect();
   }
 
-  // Рассчитываем количество баров и устанавливаем точную ширину контейнера
   updateBarCountAndWidth() {
     const volumeDiv = this.shadowRoot.querySelector('.mmp-media-controls__volume');
     if (!volumeDiv) return;
 
-    // Доступная ширина для баров (учитываем mute-кнопку и уровень громкости, если есть)
-    const availableWidth = volumeDiv.clientWidth - 60; // ~60px на mute + отступы + % (примерно)
+    const availableWidth = volumeDiv.clientWidth - 60;
 
     const barWidth = 8;
     const gap = 4;
     const spacePerBar = barWidth + gap;
 
-    let count = Math.floor((availableWidth + gap) / spacePerBar); // +gap для максимального использования
+    let count = Math.floor((availableWidth + gap) / spacePerBar);
     count = Math.max(10, Math.min(50, count));
 
     if (count !== this.barCount) {
@@ -74,11 +72,10 @@ class MiniMediaPlayerMediaControls extends LitElement {
       this.requestUpdate();
     }
 
-    // Устанавливаем точную ширину контейнера баров
     const container = this.shadowRoot.querySelector('.volume-bars-container');
     if (container) {
       const totalBarsWidth = count * barWidth + (count - 1) * gap;
-      container.style.width = `${totalBarsWidth + 16}px`; // +16px на padding-left/right (по 8px)
+      container.style.width = `${totalBarsWidth + 16}px`;
       container.style.flex = 'none';
     }
   }
@@ -141,6 +138,8 @@ class MiniMediaPlayerMediaControls extends LitElement {
   renderVolControls(muted) {
     const volumeControls = this.config.volume_stateless
       ? this.renderVolButtons(muted)
+      : this.config.volume_bar === 'slider'
+      ? this.renderVolSlider(muted)
       : this.renderVolBars(muted);
 
     const classes = classMap({
@@ -192,7 +191,7 @@ class MiniMediaPlayerMediaControls extends LitElement {
     const rect = container.getBoundingClientRect();
     const clickX = e.clientX - rect.left;
 
-    const paddingLeft = 8; // из CSS
+    const paddingLeft = 8;
     const effectiveX = clickX - paddingLeft;
 
     if (effectiveX <= 0) {
@@ -209,6 +208,26 @@ class MiniMediaPlayerMediaControls extends LitElement {
 
     const newVol = (index + 1) / barCount;
     this.player.setVolume(null, newVol);
+  }
+
+  renderVolSlider(muted) {
+    const volPercent = muted ? 0 : this.vol;
+    return html`
+      ${this.renderMuteButton(muted)}
+      <div class="volume-slider-container">
+        <input
+          type="range"
+          class="volume-slider"
+          @input=${this.handleVolumeChange}
+          @click=${e => e.stopPropagation()}
+          ?disabled=${muted}
+          min=${this.minVol}
+          max=${this.maxVol}
+          .value=${volPercent}
+          step=${this.config.volume_step || 1}
+          style="--value-percent: ${volPercent}%">
+      </div>
+    `;
   }
 
   renderVolButtons(muted) {
@@ -232,25 +251,6 @@ class MiniMediaPlayerMediaControls extends LitElement {
     switch (this.config.replace_mute) {
       case 'play':
       case 'play_pause':
-      case 'stop':
-      case 'play_stop':
-      case 'next':
-        // ... (твой код остался без изменений)
-        // (для краткости не копирую, оставь как был)
-      default:
-        if (!this.player.supportsMute) return;
-        return html`
-          <ha-icon-button @click=${e => this.player.toggleMute(e)} .icon=${ICON.MUTE[muted]}>
-            <ha-icon .icon=${ICON.MUTE[muted]}></ha-icon>
-          </ha-icon-button>
-        `;
-    }
-  }
-  renderMuteButton(muted) {
-    if (this.config.hide.mute) return;
-    switch (this.config.replace_mute) {
-      case 'play':
-      case 'play_pause':
         return html`<ha-icon-button @click=${e => this.player.playPause(e)} .icon=${ICON.PLAY[this.player.isPlaying]}>
           <ha-icon .icon=${ICON.PLAY[this.player.isPlaying]}></ha-icon>
         </ha-icon-button>`;
@@ -268,9 +268,11 @@ class MiniMediaPlayerMediaControls extends LitElement {
         </ha-icon-button>`;
       default:
         if (!this.player.supportsMute) return;
-        return html`<ha-icon-button @click=${e => this.player.toggleMute(e)} .icon=${ICON.MUTE[muted]}>
-          <ha-icon .icon=${ICON.MUTE[muted]}></ha-icon>
-        </ha-icon-button>`;
+        return html`
+          <ha-icon-button @click=${e => this.player.toggleMute(e)} .icon=${ICON.MUTE[muted]}>
+            <ha-icon .icon=${ICON.MUTE[muted]}></ha-icon>
+          </ha-icon-button>
+        `;
     }
   }
 
@@ -323,7 +325,7 @@ class MiniMediaPlayerMediaControls extends LitElement {
     this.player.setVolume(ev, vol);
   }
 
-static get styles() {
+  static get styles() {
     return [
       sharedStyle,
       css`
@@ -348,7 +350,6 @@ static get styles() {
           cursor: pointer;
           justify-content: flex-start;
           box-sizing: border-box;
-          /* Ширина будет устанавливаться динамически через JS */
         }
 
         .volume-bars-container[disabled] {
@@ -384,6 +385,87 @@ static get styles() {
           height: 100%;
           opacity: 0;
           cursor: pointer;
+        }
+
+        /* ==================== ИСПРАВЛЕННЫЙ СЛАЙДЕР ==================== */
+        .volume-slider {
+          -webkit-appearance: none;
+          appearance: none;
+          width: 100%;
+          height: 36px;
+          background: transparent;
+          cursor: pointer;
+          border-radius: 4px;
+        }
+
+        /* Фон трека (неактивная часть — всегда видна по всей длине) */
+        .volume-slider::-webkit-slider-runnable-track {
+          width: 100%;
+          height: 6px;
+          background: var(--paper-slider-container-color, rgba(var(--rgb-primary-text-color), 0.22));
+          border-radius: 3px;
+        }
+
+        .volume-slider::-moz-range-track {
+          width: 100%;
+          height: 6px;
+          background: var(--paper-slider-container-color, rgba(var(--rgb-primary-text-color), 0.22));
+          border-radius: 3px;
+          border: none;
+        }
+
+        /* Заполненная часть (активный прогресс) — накладывается поверх фона */
+        .volume-slider::-webkit-slider-runnable-track {
+          background: linear-gradient(
+            to right,
+            var(--primary-color, #6200ee) 0%,
+            var(--primary-color, #6200ee) var(--value-percent, 0%),
+            transparent var(--value-percent, 0%),
+            transparent 100%
+          ),
+          var(--paper-slider-container-color, rgba(var(--rgb-primary-text-color), 0.22));
+          border-radius: 3px;
+          height: 6px;
+        }
+
+        /* Для Firefox заполнение не поддерживается так же, но фон уже видим */
+
+        /* Ползунок */
+        .volume-slider::-webkit-slider-thumb {
+          -webkit-appearance: none;
+          appearance: none;
+          width: 16px;
+          height: 16px;
+          background: var(--primary-color, #6200ee);
+          border-radius: 50%;
+          cursor: pointer;
+          box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+          margin-top: -5px;
+        }
+
+        .volume-slider::-moz-range-thumb {
+          width: 16px;
+          height: 16px;
+          background: var(--primary-color, #6200ee);
+          border-radius: 50%;
+          cursor: pointer;
+          border: none;
+          box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        }
+
+        .volume-slider:disabled {
+          opacity: 0.4;
+          cursor: not-allowed;
+        }
+
+        .volume-slider-container {
+          position: relative;
+          display: flex;
+          align-items: center;
+          height: 50px;
+          padding: 0 8px;
+          box-sizing: border-box;
+          flex: 1;
         }
 
         ha-icon-button {

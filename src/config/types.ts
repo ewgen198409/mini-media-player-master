@@ -13,6 +13,7 @@ export interface MiniMediaPlayerBaseConfiguration {
   sound_mode?: 'default' | 'icon' | 'full';
   info?: 'default' | 'short' | 'scroll';
   volume_stateless?: boolean;
+  volume_bar?: 'bars' | 'slider';
   volume_step?: number;
   max_volume?: number;
   min_volume?: number;
@@ -43,6 +44,7 @@ export interface MiniMediaPlayerConfiguration extends MiniMediaPlayerBaseConfigu
   info: 'default' | 'short' | 'scroll';
   group: boolean;
   volume_stateless: boolean;
+  volume_bar: 'bars' | 'slider';
   more_info: boolean;
   source: 'default' | 'icon' | 'full';
   sound_mode: 'default' | 'icon' | 'full';
