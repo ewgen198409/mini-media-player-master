@@ -3,14 +3,13 @@
 import {
   LitElement,
   html,
-  property,
-  state,
   CSSResultGroup,
   PropertyValues,
   TemplateResult,
-} from 'lit-element';
-import { classMap } from 'lit-html/directives/class-map';
-import { styleMap } from 'lit-html/directives/style-map';
+} from 'lit';
+import { property, state } from 'lit/decorators.js';
+import { classMap } from 'lit/directives/class-map.js';
+import { styleMap } from 'lit/directives/style-map.js';
 import ResizeObserver from 'resize-observer-polyfill';
 
 import { generateConfig } from './config/config';
@@ -32,7 +31,6 @@ import './components/mediaControls';
 
 import { UPDATE_PROPS, BREAKPOINT } from './const';
 import { HomeAssistant, MediaPlayerEntity } from './types';
-import { Part } from 'lit-html';
 import { MiniMediaPlayerBaseConfiguration, MiniMediaPlayerConfiguration } from './config/types';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -82,8 +80,8 @@ class MiniMediaPlayer extends LitElement {
   @state() private groupMgmtEntity?: MediaPlayerEntity;
   @state() private break = false;
   @state() private _resizeEntry?: ResizeObserverEntry;
-  @state() private _resizeTimer?: NodeJS.Timeout;
-  @state() private _idleTracker?: NodeJS.Timeout;
+  @state() private _resizeTimer?: ReturnType<typeof setTimeout>;
+  @state() private _idleTracker?: ReturnType<typeof setTimeout>;
 
   public static async getConfigElement() {
     await import('./editor');
@@ -344,7 +342,7 @@ class MiniMediaPlayer extends LitElement {
     return;
   }
 
-  computeStyles(): (part: Part) => void {
+  computeStyles() {
     const { scale } = this.config;
     return styleMap({
       ...(scale && { '--mmp-unit': `${40 * scale}px` }),

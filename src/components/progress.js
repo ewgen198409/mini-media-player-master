@@ -1,8 +1,8 @@
-import { LitElement, html, css } from 'lit-element';
-import { classMap } from 'lit-html/directives/class-map';
+import { LitElement, html, css } from 'lit';
+import { classMap } from 'lit/directives/class-map.js';
 
 import convertProgress from '../utils/getProgress';
-import {styleMap} from 'lit-html/directives/style-map';
+import {styleMap} from 'lit/directives/style-map.js';
 
 class MiniMediaPlayerProgress extends LitElement {
   static get properties() {

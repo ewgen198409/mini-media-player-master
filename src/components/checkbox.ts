@@ -1,4 +1,5 @@
-import { LitElement, html, css, CSSResult, property } from 'lit-element';
+import { LitElement, html, css, CSSResult } from 'lit';
+import { property } from 'lit/decorators.js';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 class MiniMediaPlayerCheckbox extends LitElement {

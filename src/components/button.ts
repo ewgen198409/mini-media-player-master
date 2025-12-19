@@ -1,4 +1,4 @@
-import { LitElement, html, css, CSSResult } from 'lit-element';
+import { LitElement, html, css, CSSResult } from 'lit';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 class MiniMediaPlayerButton extends LitElement {
