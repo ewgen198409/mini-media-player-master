@@ -249,9 +249,9 @@ export default class MediaPlayerObject {
       const image64 = arrayBufferToBase64(buffer);
       const imageType = res.headers.get('Content-Type') || 'image/jpeg';
       return `url(data:${imageType};base64,${image64})`;
-    } catch (error) {
-      return false;
-    }
+  } catch {
+    return false;
+  }
   }
 
   // eslint-disable-next-line  @typescript-eslint/no-explicit-any

@@ -24,6 +24,7 @@ const plugins = [
   typescript(),
   json(),
   babel({
+    babelHelpers: 'bundled',
     exclude: 'node_modules/**',
   }),
   dev && serve(serveopts),

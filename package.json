@@ -16,6 +16,7 @@
   "repository": "git@github.com:ewgen198409/mini-media-player-master.git",
   "author": "Karl Kihlström vs Ewgeniy1984",
   "license": "MIT",
+  "type": "module",
   "dependencies": {
     "home-assistant-js-websocket": "^9.4.0",
     "@lit/reactive-element": "^2.0.0",
@@ -28,8 +29,8 @@
     "@babel/plugin-transform-class-properties": "^7.24.0",
     "@babel/plugin-proposal-decorators": "^7.24.0",
     "@rollup/plugin-json": "^6.1.0",
-    "@typescript-eslint/eslint-plugin": "^7.0.0",
-    "@typescript-eslint/parser": "^7.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
     "eslint": "^8.57.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^9.1.0",
