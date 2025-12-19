@@ -3,6 +3,16 @@
 [![](https://img.shields.io/github/release/kalkih/mini-media-player.svg?style=flat-square)](https://github.com/kalkih/mini-media-player/releases/latest)
 [![](https://img.shields.io/travis/com/kalkih/mini-media-player?style=flat-square)](https://travis-ci.org/kalkih/mini-media-player)
 
+Fix Native Volume BAR 
+Добавить в конфиг карты:
+
+volume_bar: 'slider'                  # для стандартного HA slider
+
+volume_bar: 'bars'                    # для текущего кастомного (по умолчанию)
+
+<img width="906" height="206" alt="image" src="https://github.com/user-attachments/assets/9f3ec753-7e9f-4b64-8fbd-bdabc0ef539a" />   
+<img width="915" height="213" alt="image" src="https://github.com/user-attachments/assets/ae099a9a-34c6-4ef6-8292-ac01a24503a5" />
+
 A minimalistic yet customizable media player card for [Home Assistant](https://github.com/home-assistant/home-assistant) Lovelace UI.
 
 Inspired by [Custom UI: Mini media player](https://community.home-assistant.io/t/custom-ui-mini-media-player/40135) and [custom-lovelace](https://github.com/ciotlosm/custom-lovelace).
@@ -15,7 +25,7 @@ Inspired by [Custom UI: Mini media player](https://community.home-assistant.io/t
 
 #### UI mode
 
-1. Download and copy `mini-media-player-bundle.js` from the https://github.com/ewgen198409/mini-media-player-master/releases/tag/1.8.0 into your `config/www` directory.
+1. Download and copy `mini-media-player-bundle.js` from the https://github.com/ewgen198409/mini-media-player-master/releases into your `config/www` directory.
 2. Go to Sidebar -> Settings -> Dashboards -> Menu (top right corner) -> Resources.
 3. Click on `+ ADD RESOURCE`.
 4. Type `/local/mini-media-player-bundle.js` below URL.
